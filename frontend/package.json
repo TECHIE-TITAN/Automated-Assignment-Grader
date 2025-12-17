@@ -1,0 +1,37 @@
+{
+  "name": "frontend",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "axios": "^1.13.2",
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1",
+    "react-router-dom": "^7.10.1",
+    "react-scripts": "5.0.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "start:teacher1": "PORT=3001 REACT_APP_API_URL=http://localhost:5001/api react-scripts start",
+    "start:teacher2": "PORT=3002 REACT_APP_API_URL=http://localhost:5002/api react-scripts start",
+    "start:student1": "PORT=3003 REACT_APP_API_URL=http://localhost:5003/api react-scripts start",
+    "start:student2": "PORT=3004 REACT_APP_API_URL=http://localhost:5004/api react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

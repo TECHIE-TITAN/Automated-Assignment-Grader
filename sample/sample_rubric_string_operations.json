@@ -1,0 +1,87 @@
+{
+  "metadata": {
+    "assignment": "String Manipulation",
+    "total_points": 100,
+    "description": "Rubric for string operations assignment"
+  },
+  "criteria": [
+    {
+      "name": "reverse_string Function",
+      "description": "Tests string reversal functionality",
+      "weight": 0.2,
+      "auto_gradable": true,
+      "ai_assisted": false,
+      "test_cases": [
+        {
+          "function_call": "reverse_string('hello')",
+          "expected_output": "olleh"
+        },
+        {
+          "function_call": "reverse_string('Python')",
+          "expected_output": "nohtyP"
+        },
+        {
+          "function_call": "reverse_string('')",
+          "expected_output": ""
+        }
+      ]
+    },
+    {
+      "name": "is_palindrome Function",
+      "description": "Tests palindrome detection",
+      "weight": 0.3,
+      "auto_gradable": true,
+      "ai_assisted": false,
+      "test_cases": [
+        {
+          "function_call": "is_palindrome('radar')",
+          "expected_output": "True"
+        },
+        {
+          "function_call": "is_palindrome('hello')",
+          "expected_output": "False"
+        },
+        {
+          "function_call": "is_palindrome('racecar')",
+          "expected_output": "True"
+        },
+        {
+          "function_call": "is_palindrome('a')",
+          "expected_output": "True"
+        }
+      ]
+    },
+    {
+      "name": "count_vowels Function",
+      "description": "Tests vowel counting functionality",
+      "weight": 0.3,
+      "auto_gradable": true,
+      "ai_assisted": false,
+      "test_cases": [
+        {
+          "function_call": "count_vowels('hello')",
+          "expected_output": "2"
+        },
+        {
+          "function_call": "count_vowels('aeiou')",
+          "expected_output": "5"
+        },
+        {
+          "function_call": "count_vowels('xyz')",
+          "expected_output": "0"
+        },
+        {
+          "function_call": "count_vowels('Education')",
+          "expected_output": "5"
+        }
+      ]
+    },
+    {
+      "name": "Code Quality & Efficiency",
+      "description": "Manual review of algorithm efficiency and code quality",
+      "weight": 0.2,
+      "auto_gradable": false,
+      "ai_assisted": true
+    }
+  ]
+}

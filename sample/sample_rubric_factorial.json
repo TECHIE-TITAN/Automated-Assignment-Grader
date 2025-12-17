@@ -1,0 +1,71 @@
+{
+  "metadata": {
+    "assignment": "Factorial Calculator",
+    "total_points": 100,
+    "description": "Rubric for evaluating factorial function implementation"
+  },
+  "criteria": [
+    {
+      "name": "Factorial Function - Basic Cases",
+      "description": "Tests basic factorial calculations",
+      "weight": 0.3,
+      "auto_gradable": true,
+      "ai_assisted": false,
+      "test_cases": [
+        {
+          "function_call": "factorial(5)",
+          "expected_output": "120"
+        },
+        {
+          "function_call": "factorial(0)",
+          "expected_output": "1"
+        },
+        {
+          "function_call": "factorial(1)",
+          "expected_output": "1"
+        },
+        {
+          "function_call": "factorial(3)",
+          "expected_output": "6"
+        }
+      ]
+    },
+    {
+      "name": "Factorial Function - Edge Cases",
+      "description": "Tests edge cases and larger numbers",
+      "weight": 0.35,
+      "auto_gradable": true,
+      "ai_assisted": false,
+      "test_cases": [
+        {
+          "function_call": "factorial(10)",
+          "expected_output": "3628800"
+        },
+        {
+          "function_call": "factorial(7)",
+          "expected_output": "5040"
+        }
+      ]
+    },
+    {
+      "name": "Error Handling",
+      "description": "Checks if function handles invalid inputs properly",
+      "weight": 0.2,
+      "auto_gradable": true,
+      "ai_assisted": false,
+      "test_cases": [
+        {
+          "function_call": "factorial(-1)",
+          "expected_output": "None"
+        }
+      ]
+    },
+    {
+      "name": "Documentation & Style",
+      "description": "Manual review of docstrings, comments, and code style",
+      "weight": 0.15,
+      "auto_gradable": false,
+      "ai_assisted": true
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "metadata": {
+    "assignment": "List Operations in Python",
+    "total_points": 100,
+    "description": "Rubric for evaluating list operations assignment"
+  },
+  "criteria": [
+    {
+      "name": "sum_list Function",
+      "description": "Tests if sum_list function correctly calculates sum of list elements",
+      "weight": 0.25,
+      "auto_gradable": true,
+      "ai_assisted": false,
+      "test_cases": [
+        {
+          "function_call": "sum_list([1, 2, 3, 4, 5])",
+          "expected_output": "15"
+        },
+        {
+          "function_call": "sum_list([10, 20, 30])",
+          "expected_output": "60"
+        },
+        {
+          "function_call": "sum_list([])",
+          "expected_output": "0"
+        },
+        {
+          "function_call": "sum_list([-5, 5, -10, 10])",
+          "expected_output": "0"
+        }
+      ]
+    },
+    {
+      "name": "average_list Function",
+      "description": "Tests if average_list function correctly calculates average",
+      "weight": 0.25,
+      "auto_gradable": true,
+      "ai_assisted": false,
+      "test_cases": [
+        {
+          "function_call": "average_list([1, 2, 3, 4, 5])",
+          "expected_output": "3.0"
+        },
+        {
+          "function_call": "average_list([10, 20, 30])",
+          "expected_output": "20.0"
+        },
+        {
+          "function_call": "average_list([5])",
+          "expected_output": "5.0"
+        }
+      ]
+    },
+    {
+      "name": "find_max Function",
+      "description": "Tests if find_max function correctly finds maximum element",
+      "weight": 0.25,
+      "auto_gradable": true,
+      "ai_assisted": false,
+      "test_cases": [
+        {
+          "function_call": "find_max([1, 5, 3, 9, 2])",
+          "expected_output": "9"
+        },
+        {
+          "function_call": "find_max([-10, -5, -20])",
+          "expected_output": "-5"
+        },
+        {
+          "function_call": "find_max([42])",
+          "expected_output": "42"
+        }
+      ]
+    },
+    {
+      "name": "Code Quality",
+      "description": "Manual review of code structure, comments, and style",
+      "weight": 0.25,
+      "auto_gradable": false,
+      "ai_assisted": true
+    }
+  ]
+}
