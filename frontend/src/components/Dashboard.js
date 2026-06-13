@@ -10,7 +10,7 @@ const Dashboard = ({ user, onLogout }) => {
   return (
     <div className="dashboard-container">
       <nav className="navbar">
-        <div className="navbar-brand">🎓 Assignment Grader</div>
+        <div className="navbar-brand">Assignment Grader</div>
         <div className="navbar-user">
           <div className="user-info">
             <div className="user-name">{user.name}</div>
@@ -27,20 +27,20 @@ const Dashboard = ({ user, onLogout }) => {
           className={`tab ${activeTab === 'overview' ? 'active' : ''}`}
           onClick={() => setActiveTab('overview')}
         >
-          📊 Overview
+          Overview
         </button>
         <button 
           className={`tab ${activeTab === 'classrooms' ? 'active' : ''}`}
           onClick={() => setActiveTab('classrooms')}
         >
-          🏫 Classrooms
+          Classrooms
         </button>
         {isTeacher && (
           <button 
             className={`tab ${activeTab === 'assignments' ? 'active' : ''}`}
             onClick={() => setActiveTab('assignments')}
-          >
-            📝 Assignments
+            >
+            Assignments
           </button>
         )}
       </div>
@@ -49,7 +49,7 @@ const Dashboard = ({ user, onLogout }) => {
         {activeTab === 'overview' && (
           <>
             <div className="welcome-card">
-              <h2>Welcome back, {user.name}! 👋</h2>
+              <h2>Welcome back, {user.name}!</h2>
               <p>
                 {isTeacher
                   ? 'Manage your classrooms, assignments, and grade student submissions.'

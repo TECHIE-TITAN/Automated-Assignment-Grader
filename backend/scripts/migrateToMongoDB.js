@@ -13,13 +13,13 @@ const Submission = require('../models/Submission');
 
 const migrateData = async () => {
   try {
-    console.log('🚀 Starting migration from JSON to MongoDB...\n');
+    console.log('Starting migration from JSON to MongoDB...\n');
     
     // Connect to MongoDB
     await connectDB();
     
     // Clear existing data (optional - remove in production!)
-    console.log('🗑️  Clearing existing MongoDB data...');
+    console.log('Clearing existing MongoDB data...');
     await Student.deleteMany({});
     await Teacher.deleteMany({});
     await Classroom.deleteMany({});
@@ -35,7 +35,7 @@ const migrateData = async () => {
     const assignmentIdMap = {};
     
     // 1. Migrate Students
-    console.log('\n📚 Migrating Students...');
+    console.log('\nMigrating Students...');
     const students = oldDb.findMany('students');
     for (const student of students) {
       const newStudent = await Student.create({
@@ -45,12 +45,12 @@ const migrateData = async () => {
         rollNumber: student.rollNumber
       });
       studentIdMap[student.id] = newStudent._id;
-      console.log(`  ✓ ${student.name} (${student.email})`);
+      console.log(`  ${student.name} (${student.email})`);
     }
-    console.log(`✅ Migrated ${students.length} students`);
+    console.log(`Migrated ${students.length} students`);
     
     // 2. Migrate Teachers
-    console.log('\n👨‍🏫 Migrating Teachers...');
+    console.log('\nMigrating Teachers...');
     const teachers = oldDb.findMany('teachers');
     for (const teacher of teachers) {
       const newTeacher = await Teacher.create({
@@ -59,17 +59,17 @@ const migrateData = async () => {
         password: teacher.password
       });
       teacherIdMap[teacher.id] = newTeacher._id;
-      console.log(`  ✓ ${teacher.name} (${teacher.email})`);
+      console.log(`  ${teacher.name} (${teacher.email})`);
     }
-    console.log(`✅ Migrated ${teachers.length} teachers`);
+    console.log(`Migrated ${teachers.length} teachers`);
     
     // 3. Migrate Classrooms
-    console.log('\n🏫 Migrating Classrooms...');
+    console.log('\nMigrating Classrooms...');
     const classrooms = oldDb.findMany('classrooms');
     for (const classroom of classrooms) {
       // Skip if teacherId is missing or invalid
       if (!classroom.teacherId || !teacherIdMap[classroom.teacherId]) {
-        console.log(`  ⚠️  Skipping ${classroom.name} - No valid teacher ID`);
+        console.log(`  Skipping ${classroom.name} - No valid teacher ID`);
         continue;
       }
       
@@ -80,12 +80,12 @@ const migrateData = async () => {
         teacherName: classroom.teacherName
       });
       classroomIdMap[classroom.id] = newClassroom._id;
-      console.log(`  ✓ ${classroom.name}`);
+      console.log(`  ${classroom.name}`);
     }
-    console.log(`✅ Migrated ${Object.keys(classroomIdMap).length} classrooms`);
+    console.log(`Migrated ${Object.keys(classroomIdMap).length} classrooms`);
     
     // 4. Migrate Enrollments
-    console.log('\n📝 Migrating Enrollments...');
+    console.log('\nMigrating Enrollments...');
     const enrollments = oldDb.findMany('enrollments');
     let enrollmentCount = 0;
     for (const enrollment of enrollments) {
@@ -101,15 +101,15 @@ const migrateData = async () => {
       });
       enrollmentCount++;
     }
-    console.log(`✅ Migrated ${enrollmentCount} enrollments`);
+    console.log(`Migrated ${enrollmentCount} enrollments`);
     
     // 5. Migrate Assignments
-    console.log('\n📋 Migrating Assignments...');
+    console.log('\nMigrating Assignments...');
     const assignments = oldDb.findMany('assignments');
     for (const assignment of assignments) {
       // Skip if classroom or teacher ID is missing or invalid
       if (!classroomIdMap[assignment.classroomId] || !teacherIdMap[assignment.teacherId]) {
-        console.log(`  ⚠️  Skipping ${assignment.title} - No valid classroom/teacher ID`);
+        console.log(`  Skipping ${assignment.title} - No valid classroom/teacher ID`);
         continue;
       }
       
@@ -123,12 +123,12 @@ const migrateData = async () => {
         hasRubric: assignment.hasRubric || false
       });
       assignmentIdMap[assignment.id] = newAssignment._id;
-      console.log(`  ✓ ${assignment.title}`);
+      console.log(`  ${assignment.title}`);
     }
-    console.log(`✅ Migrated ${Object.keys(assignmentIdMap).length} assignments`);
+    console.log(`Migrated ${Object.keys(assignmentIdMap).length} assignments`);
     
     // 6. Migrate Rubrics
-    console.log('\n📊 Migrating Rubrics...');
+    console.log('\nMigrating Rubrics...');
     const rubrics = oldDb.findMany('rubrics');
     let rubricCount = 0;
     for (const rubric of rubrics) {
@@ -144,12 +144,12 @@ const migrateData = async () => {
         metadata: rubric.metadata || {}
       });
       rubricCount++;
-      console.log(`  ✓ Rubric for assignment ID ${rubric.assignmentId}`);
+      console.log(`  Rubric for assignment ID ${rubric.assignmentId}`);
     }
-    console.log(`✅ Migrated ${rubricCount} rubrics`);
+    console.log(`Migrated ${rubricCount} rubrics`);
     
     // 7. Migrate Submissions
-    console.log('\n📤 Migrating Submissions...');
+    console.log('\nMigrating Submissions...');
     const submissions = oldDb.findMany('submissions');
     let submissionCount = 0;
     for (const submission of submissions) {
@@ -174,10 +174,10 @@ const migrateData = async () => {
       });
       submissionCount++;
     }
-    console.log(`✅ Migrated ${submissionCount} submissions`);
+    console.log(`Migrated ${submissionCount} submissions`);
     
-    console.log('\n🎉 Migration completed successfully!');
-    console.log('\n📊 Summary:');
+    console.log('\nMigration completed successfully!');
+    console.log('\nSummary:');
     console.log(`  Students: ${students.length}`);
     console.log(`  Teachers: ${teachers.length}`);
     console.log(`  Classrooms: ${Object.keys(classroomIdMap).length}`);
@@ -188,7 +188,7 @@ const migrateData = async () => {
     
     process.exit(0);
   } catch (error) {
-    console.error('❌ Migration failed:', error);
+    console.error('Migration failed:', error);
     process.exit(1);
   }
 };

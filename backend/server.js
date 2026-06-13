@@ -14,9 +14,12 @@ const connectDB = require('./config/mongodb');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Connect to MongoDB
+// Connect to MongoDB (attempt, but fall back to JSON DB on failure)
 if (process.env.DB_TYPE === 'mongodb') {
-  connectDB();
+  connectDB().catch(err => {
+    console.error('MongoDB connection failed; falling back to JSON data files.');
+    process.env.DB_TYPE = 'json';
+  });
 }
 
 // For backward compatibility, still load db.js for migration scripts
@@ -40,7 +43,7 @@ app.use('/api/rubrics', rubricRoutes);
 // Test route
 app.get('/', (req, res) => {
   res.json({ 
-    message: '🎓 Assignment Grader API is running!',
+    message: 'Assignment Grader API is running',
     timestamp: new Date().toISOString(),
     version: '1.0.0'
   });
@@ -103,10 +106,10 @@ app.get('/api/stats', (req, res) => {
 // Start server
 app.listen(PORT, () => {
   console.log('\n' + '='.repeat(50));
-  console.log('🚀 Assignment Grader API Server Started');
+  console.log('Assignment Grader API Server Started');
   console.log('='.repeat(50));
-  console.log(`📡 Server URL: http://localhost:${PORT}`);
-  console.log(`💚 Health Check: http://localhost:${PORT}/health`);
-  console.log(`📊 Statistics: http://localhost:${PORT}/api/stats`);
+  console.log(`Server URL: http://localhost:${PORT}`);
+  console.log(`Health Check: http://localhost:${PORT}/health`);
+  console.log(`Statistics: http://localhost:${PORT}/api/stats`);
   console.log('='.repeat(50) + '\n');
 });

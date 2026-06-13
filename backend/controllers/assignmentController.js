@@ -1,6 +1,27 @@
 const db = require('../config/database');
 const { autoGradeSubmission, generateFeedback } = require('../services/pythonEvaluator');
 
+const getDueDate = (assignment) => {
+  if (!assignment || !assignment.dueDate) {
+    return null;
+  }
+
+  const dueDate = new Date(assignment.dueDate);
+  return Number.isNaN(dueDate.getTime()) ? null : dueDate;
+};
+
+const isAssignmentClosed = (assignment) => {
+  const dueDate = getDueDate(assignment);
+  return dueDate ? dueDate.getTime() <= Date.now() : false;
+};
+
+const withAssignmentStatus = (assignment, extraFields = {}) => ({
+  ...assignment,
+  isClosed: isAssignmentClosed(assignment),
+  status: isAssignmentClosed(assignment) ? 'closed' : 'open',
+  ...extraFields
+});
+
 // Create a new assignment for a classroom
 const createAssignment = async (req, res) => {
   try {
@@ -72,12 +93,11 @@ const getClassroomAssignments = async (req, res) => {
           assignmentId: assignment.id,
           studentId: userId
         });
-        return {
-          ...assignment,
+        return withAssignmentStatus(assignment, {
           submitted: !!submission,
           submissionDate: submission?.submittedAt,
           grade: submission?.grade
-        };
+        });
       }));
       return res.json({ assignments: assignmentsWithStatus });
     }
@@ -86,11 +106,10 @@ const getClassroomAssignments = async (req, res) => {
     const assignmentsWithStats = await Promise.all(assignments.map(async assignment => {
       const submissions = await db.findMany('submissions', { assignmentId: assignment.id });
       const gradedCount = submissions.filter(s => s.grade !== null && s.grade !== undefined).length;
-      return {
-        ...assignment,
+      return withAssignmentStatus(assignment, {
         totalSubmissions: submissions.length,
         gradedSubmissions: gradedCount
-      };
+      });
     }));
 
     res.json({ assignments: assignmentsWithStats });
@@ -143,7 +162,7 @@ const getAssignmentDetails = async (req, res) => {
 
     res.json({
       assignment: {
-        ...assignment,
+        ...withAssignmentStatus(assignment),
         classroom: {
           id: classroom.id,
           name: classroom.name
@@ -168,6 +187,10 @@ const submitAssignment = async (req, res) => {
     const assignment = await db.findOne('assignments', { id: id });
     if (!assignment) {
       return res.status(404).json({ error: 'Assignment not found' });
+    }
+
+    if (isAssignmentClosed(assignment)) {
+      return res.status(400).json({ error: 'Assignment is closed and no longer accepts submissions' });
     }
 
     // Verify student is enrolled
@@ -265,11 +288,11 @@ const generateAutoGradeFeedback = (results) => {
   let feedback = `Auto-Graded: ${results.totalPoints}/${results.maxPoints} points\n\n`;
   
   if (!results.syntaxValid) {
-    feedback += `⚠️ Syntax Error: ${results.executionError}\n\n`;
+    feedback += `Syntax Error: ${results.executionError}\n\n`;
   }
   
   results.criteria.forEach(criterion => {
-    const status = criterion.passed === null ? '⏸️' : (criterion.passed ? '✅' : '❌');
+    const status = criterion.passed === null ? 'PENDING' : (criterion.passed ? 'PASS' : 'FAIL');
     feedback += `${status} ${criterion.name}: ${criterion.points}/${criterion.maxPoints} points\n`;
     if (criterion.details) {
       feedback += `   ${criterion.details}\n`;

@@ -28,7 +28,7 @@ const Login = ({ onLoginSuccess }) => {
       localStorage.setItem('user', JSON.stringify(response.data.user));
 
       // Show success message
-      setSuccess(`✅ Login successful! Welcome ${response.data.user.name}`);
+      setSuccess(`Login successful! Welcome ${response.data.user.name}`);
       
       // Wait 1.5 seconds before redirecting to dashboard
       setTimeout(() => {
@@ -61,7 +61,7 @@ const Login = ({ onLoginSuccess }) => {
     <div className="login-container">
       <div className="login-box">
         <div className="login-header">
-          <h1>🎓 Assignment Grader</h1>
+          <h1>Assignment Grader</h1>
           <p>Sign in to access your portal</p>
         </div>
 
@@ -70,13 +70,13 @@ const Login = ({ onLoginSuccess }) => {
             className={`role-tab ${role === 'student' ? 'active' : ''}`}
             onClick={() => setRole('student')}
           >
-            👨‍🎓 Student
+            Student
           </button>
           <button
             className={`role-tab ${role === 'teacher' ? 'active' : ''}`}
             onClick={() => setRole('teacher')}
           >
-            👨‍🏫 Teacher
+            Teacher
           </button>
         </div>
 
@@ -112,7 +112,7 @@ const Login = ({ onLoginSuccess }) => {
         </form>
 
         <div className="hint-box">
-          <strong>🔑 Demo Credentials:</strong>
+          <strong>Demo Credentials:</strong>
           {role === 'student' ? (
             <>
               Email: cse001@university.edu<br />

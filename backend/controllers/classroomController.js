@@ -104,7 +104,7 @@ const getClassroomDetails = async (req, res) => {
     // Check if user has access (teacher who created it or enrolled student)
     const isTeacher = req.user.role === 'teacher' && classroom.teacherId === req.user.id;
     const isEnrolledStudent = req.user.role === 'student' && 
-      db.findOne('enrollments', { classroomId, studentId: req.user.id });
+      await db.findOne('enrollments', { classroomId, studentId: req.user.id });
 
     if (!isTeacher && !isEnrolledStudent) {
       return res.status(403).json({ error: 'Access denied' });

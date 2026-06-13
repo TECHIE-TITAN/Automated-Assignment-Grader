@@ -1,6 +1,5 @@
 1.  Rubric can be input in teacher's words but on the backend, that prompt will
     be sent to LLM that updates the rubric on the server. 
-
 2.  Dashboard Analytics and identification of struggling students
 3.  Automated email notifications
 4.  Automated feedback on the basis of results

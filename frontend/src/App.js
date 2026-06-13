@@ -4,7 +4,7 @@ import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 
 const DebugBar = () => {
-  const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+  const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5001/api';
   const token = localStorage.getItem('token');
   const user = localStorage.getItem('user');
 

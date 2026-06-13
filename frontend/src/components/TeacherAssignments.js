@@ -245,11 +245,11 @@ const TeacherAssignments = ({ user }) => {
     <div className="assignments-container">
       <div className="assignments-header">
         <div className="header-left">
-          <h2>📝 Assignments</h2>
+          <h2>Assignments</h2>
           <select 
             value={selectedClassroom?.id || ''} 
             onChange={(e) => {
-              const classroom = classrooms.find(c => c.id === parseInt(e.target.value));
+              const classroom = classrooms.find(c => String(c.id) === e.target.value);
               setSelectedClassroom(classroom);
             }}
             className="classroom-select"
@@ -262,7 +262,7 @@ const TeacherAssignments = ({ user }) => {
           </select>
         </div>
         <button className="create-btn" onClick={() => setShowCreateModal(true)}>
-          ➕ Create Assignment
+          Create Assignment
         </button>
       </div>
 
@@ -285,7 +285,7 @@ const TeacherAssignments = ({ user }) => {
                     onClick={(e) => { e.stopPropagation(); handleDeleteAssignment(assignment.id); }}
                     title="Delete"
                   >
-                    🗑️
+                    Delete
                   </button>
                 </div>
               </div>
@@ -310,9 +310,14 @@ const TeacherAssignments = ({ user }) => {
               </div>
               <div className="assignment-status">
                 {assignment.hasRubric ? (
-                  <span className="status-badge graded">✓ Has Rubric</span>
+                  <span className="status-badge graded">Has Rubric</span>
                 ) : (
-                  <span className="status-badge not-graded">⚠ No Rubric</span>
+                  <span className="status-badge not-graded">No Rubric</span>
+                )}
+                {assignment.isClosed ? (
+                  <span className="status-badge not-graded" style={{ marginLeft: 8 }}>Closed</span>
+                ) : (
+                  <span className="status-badge graded" style={{ marginLeft: 8 }}>Open</span>
                 )}
               </div>
             </div>
@@ -338,6 +343,10 @@ const TeacherAssignments = ({ user }) => {
               <div className="meta-item">
                 <span className="meta-label">Has Rubric:</span>
                 <span className="meta-value">{selectedAssignment.hasRubric ? 'Yes' : 'No'}</span>
+              </div>
+              <div className="meta-item">
+                <span className="meta-label">Status:</span>
+                <span className="meta-value">{selectedAssignment.isClosed ? 'Closed' : 'Open'}</span>
               </div>
             </div>
 
@@ -556,7 +565,7 @@ const TeacherAssignments = ({ user }) => {
               />
               {rubricFile && (
                 <p style={{ marginTop: '8px', color: '#28a745', fontSize: '14px' }}>
-                  ✓ Selected: {rubricFile.name}
+                  Selected: {rubricFile.name}
                 </p>
               )}
             </div>

@@ -4,12 +4,12 @@ A full-stack web application for automated code grading with support for Python 
 
 ## Features
 
-- 🎓 **Role-based Authentication**: Separate interfaces for teachers and students
-- 📚 **Classroom Management**: Create and manage multiple classrooms
-- 📝 **Assignment System**: Create assignments with custom grading rubrics
-- 🤖 **Automated Grading**: Python code execution with test case validation
-- 📊 **Real-time Feedback**: Instant grading results with detailed breakdowns
-- 🔒 **Secure**: JWT authentication, bcrypt password hashing
+- **Role-based Authentication**: Separate interfaces for teachers and students
+- **Classroom Management**: Create and manage multiple classrooms
+- **Assignment System**: Create assignments with custom grading rubrics
+- **Automated Grading**: Python code execution with test case validation
+- **Real-time Feedback**: Instant grading results with detailed breakdowns
+- **Secure**: JWT authentication, bcrypt password hashing
 
 ## Tech Stack
 

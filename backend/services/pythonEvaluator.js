@@ -343,12 +343,12 @@ const generateFeedback = (gradingResults) => {
   feedback += `Total Score: ${gradingResults.totalPoints}/${gradingResults.maxPoints}\n\n`;
 
   if (!gradingResults.syntaxValid) {
-    feedback += `⚠️ Syntax Error: ${gradingResults.executionError}\n\n`;
+    feedback += `Syntax Error: ${gradingResults.executionError}\n\n`;
   }
 
   feedback += `Criteria Evaluation:\n`;
   for (const criterion of gradingResults.criteria) {
-    const status = criterion.passed ? '✅' : '❌';
+    const status = criterion.passed ? 'PASS' : 'FAIL';
     feedback += `${status} ${criterion.name} (${criterion.points}/${criterion.maxPoints} points)\n`;
     feedback += `   ${criterion.details}\n`;
   }

@@ -51,7 +51,7 @@ const StudentClassrooms = ({ user }) => {
         <div className="error-message">{error}</div>
       ) : classrooms.length === 0 ? (
         <div className="empty-state">
-          <p>📚 Not enrolled in any classrooms yet</p>
+          <p>Not enrolled in any classrooms yet</p>
           <p>Wait for your teacher to add you to a classroom!</p>
         </div>
       ) : (
@@ -66,11 +66,11 @@ const StudentClassrooms = ({ user }) => {
               </p>
               <div className="classroom-info">
                 <div className="info-item">
-                  <span className="info-label">👨‍🏫 Teacher:</span>
+                  <span className="info-label">Teacher:</span>
                   <span className="info-value">{classroom.teacherName}</span>
                 </div>
                 <div className="info-item">
-                  <span className="info-label">📅 Enrolled:</span>
+                  <span className="info-label">Enrolled:</span>
                   <span className="info-value">{new Date(classroom.enrolledAt).toLocaleDateString()}</span>
                 </div>
               </div>
@@ -164,6 +164,11 @@ const StudentClassroomDetails = ({ classroom, onBack, studentId }) => {
       return;
     }
 
+    if (selectedAssignment?.isClosed || new Date(selectedAssignment?.dueDate) <= new Date()) {
+      alert('This assignment is closed and can no longer accept submissions');
+      return;
+    }
+
     setSubmitting(true);
     try {
       const isResubmission = selectedAssignment.submission !== null;
@@ -203,8 +208,8 @@ const StudentClassroomDetails = ({ classroom, onBack, studentId }) => {
         <div>
           <h2>{details.name}</h2>
           <p>{details.description}</p>
-          <p style={{ marginTop: '10px', color: '#666', fontSize: '14px' }}>
-            👨‍🏫 Teacher: <strong>{details.teacherName}</strong>
+            <p style={{ marginTop: '10px', color: '#666', fontSize: '14px' }}>
+            Teacher: <strong>{details.teacherName}</strong>
           </p>
         </div>
       </div>
@@ -245,7 +250,7 @@ const StudentClassroomDetails = ({ classroom, onBack, studentId }) => {
       </div>
 
       <div className="welcome-card" style={{ marginTop: '30px' }}>
-        <h3>📝 Assignments</h3>
+        <h3>Assignments</h3>
         {assignments.length === 0 ? (
           <p>No assignments yet for this classroom</p>
         ) : (
@@ -274,24 +279,25 @@ const StudentClassroomDetails = ({ classroom, onBack, studentId }) => {
               <div className="meta-item"><span className="meta-label">Due:</span> <span className="meta-value">{new Date(selectedAssignment.dueDate).toLocaleString()}</span></div>
               <div className="meta-item"><span className="meta-label">Max Marks:</span> <span className="meta-value">{selectedAssignment.maxMarks}</span></div>
               <div className="meta-item"><span className="meta-label">Has Rubric:</span> <span className="meta-value">{selectedAssignment.rubric ? 'Yes' : 'No'}</span></div>
+              <div className="meta-item"><span className="meta-label">Status:</span> <span className="meta-value">{selectedAssignment.isClosed ? 'Closed' : 'Open'}</span></div>
               {selectedAssignment.submission && (
                 <>
-                  <div className="meta-item"><span className="meta-label">Status:</span> <span className="meta-value status-submitted">✓ Submitted</span></div>
+                  <div className="meta-item"><span className="meta-label">Status:</span> <span className="meta-value status-submitted">Submitted</span></div>
                   <div className="meta-item"><span className="meta-label">Submitted At:</span> <span className="meta-value">{new Date(selectedAssignment.submission.submittedAt).toLocaleString()}</span></div>
                   {selectedAssignment.submission.grade !== null && selectedAssignment.submission.grade !== undefined && (
                     <div className="meta-item"><span className="meta-label">Grade:</span> <span className="meta-value">{selectedAssignment.submission.grade}/{selectedAssignment.maxMarks}</span></div>
                   )}
-                  {new Date(selectedAssignment.dueDate) > new Date() && (
+                  {!selectedAssignment.isClosed && new Date(selectedAssignment.dueDate) > new Date() && (
                     <div className="meta-item" style={{ gridColumn: '1 / -1' }}>
                       <span style={{ color: '#28a745', fontSize: '14px' }}>
-                        ✅ You can resubmit until: {new Date(selectedAssignment.dueDate).toLocaleString()}
+                        You can resubmit until: {new Date(selectedAssignment.dueDate).toLocaleString()}
                       </span>
                     </div>
                   )}
-                  {new Date(selectedAssignment.dueDate) <= new Date() && (
+                  {selectedAssignment.isClosed && (
                     <div className="meta-item" style={{ gridColumn: '1 / -1' }}>
                       <span style={{ color: '#dc3545', fontSize: '14px' }}>
-                        ⏰ Deadline passed - No more resubmissions allowed
+                        Deadline passed - No more resubmissions allowed
                       </span>
                     </div>
                   )}
@@ -304,7 +310,7 @@ const StudentClassroomDetails = ({ classroom, onBack, studentId }) => {
               {selectedAssignment.submission ? (
                 <>
                   <button className="create-btn" style={{ marginLeft: 8 }} onClick={() => setShowCodeViewer(true)}>View Code</button>
-                  {new Date(selectedAssignment.dueDate) > new Date() && (
+                  {!selectedAssignment.isClosed && new Date(selectedAssignment.dueDate) > new Date() && (
                     <button 
                       className="submit-btn" 
                       style={{ marginLeft: 8, backgroundColor: '#ff9800' }} 
@@ -313,12 +319,14 @@ const StudentClassroomDetails = ({ classroom, onBack, studentId }) => {
                         setShowSubmitModal(true);
                       }}
                     >
-                      🔄 Resubmit
+                      Resubmit
                     </button>
                   )}
                 </>
               ) : (
-                <button className="create-btn" style={{ marginLeft: 8 }} onClick={() => setShowSubmitModal(true)}>Submit Assignment</button>
+                !selectedAssignment.isClosed && new Date(selectedAssignment.dueDate) > new Date() ? (
+                  <button className="create-btn" style={{ marginLeft: 8 }} onClick={() => setShowSubmitModal(true)}>Submit Assignment</button>
+                ) : null
               )}
             </div>
           </div>
@@ -329,10 +337,10 @@ const StudentClassroomDetails = ({ classroom, onBack, studentId }) => {
       {showSubmitModal && selectedAssignment && (
         <div className="modal-overlay" onClick={() => { setShowSubmitModal(false); setSubmissionCode(''); setSubmissionFile(null); }}>
           <div className="modal-content large" onClick={(e) => e.stopPropagation()}>
-            <h2>{selectedAssignment.submission ? '🔄 Resubmit' : 'Submit'} Assignment: {selectedAssignment.title}</h2>
+            <h2>{selectedAssignment.submission ? 'Resubmit' : 'Submit'} Assignment: {selectedAssignment.title}</h2>
             {selectedAssignment.submission && (
               <p style={{ color: '#ff9800', marginBottom: '16px', fontSize: '14px' }}>
-                ⚠️ You are resubmitting. Your previous submission will be replaced and regraded.
+                You are resubmitting. Your previous submission will be replaced and regraded.
               </p>
             )}
             
@@ -345,8 +353,8 @@ const StudentClassroomDetails = ({ classroom, onBack, studentId }) => {
                 className="file-input"
               />
               {submissionFile && (
-                <div className="file-info">
-                  ✓ File loaded: <strong>{submissionFile.name}</strong>
+                  <div className="file-info">
+                  File loaded: <strong>{submissionFile.name}</strong>
                 </div>
               )}
             </div>

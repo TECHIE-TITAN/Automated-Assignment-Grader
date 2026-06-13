@@ -4,14 +4,14 @@
 # This script helps you run multiple backend and frontend instances on different ports
 
 echo "=========================================="
-echo "🎓 Assignment Grader Multi-Instance Launcher"
+echo "Assignment Grader Multi-Instance Launcher"
 echo "=========================================="
 echo ""
 
 # Function to check if a port is in use
 check_port() {
     if lsof -Pi :$1 -sTCP:LISTEN -t >/dev/null 2>&1; then
-        echo "⚠️  Port $1 is already in use"
+        echo "Port $1 is already in use"
         return 1
     else
         return 0

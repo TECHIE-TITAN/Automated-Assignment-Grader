@@ -62,7 +62,7 @@ const TeacherClassrooms = ({ user }) => {
       <div className="classrooms-header">
         <h2>My Classrooms</h2>
         <button className="create-btn" onClick={() => setShowCreateModal(true)}>
-          ➕ Create Classroom
+          Create Classroom
         </button>
       </div>
 
@@ -70,7 +70,7 @@ const TeacherClassrooms = ({ user }) => {
         <div className="loading-message">Loading classrooms...</div>
       ) : classrooms.length === 0 ? (
         <div className="empty-state">
-          <p>📚 No classrooms yet</p>
+          <p>No classrooms yet</p>
           <p>Create your first classroom to get started!</p>
         </div>
       ) : (

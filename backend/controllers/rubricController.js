@@ -6,11 +6,11 @@ const generateAutoGradeFeedback = (results) => {
   let feedback = `Auto-Graded: ${results.totalPoints}/${results.maxPoints} points\n\n`;
   
   if (!results.syntaxValid) {
-    feedback += `⚠️ Syntax Error: ${results.executionError}\n\n`;
+    feedback += `Syntax Error: ${results.executionError}\n\n`;
   }
   
   results.criteria.forEach(criterion => {
-    const status = criterion.passed === null ? '⏸️' : (criterion.passed ? '✅' : '❌');
+    const status = criterion.passed === null ? 'PENDING' : (criterion.passed ? 'PASS' : 'FAIL');
     feedback += `${status} ${criterion.name}: ${criterion.points}/${criterion.maxPoints} points\n`;
     if (criterion.details) {
       feedback += `   ${criterion.details}\n`;

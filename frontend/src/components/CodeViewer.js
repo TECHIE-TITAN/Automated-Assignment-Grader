@@ -12,7 +12,7 @@ const CodeViewer = ({ code, language = 'python' }) => {
             alert('Code copied to clipboard!');
           }}
         >
-          📋 Copy
+          Copy
         </button>
       </div>
       <pre className="code-content">
