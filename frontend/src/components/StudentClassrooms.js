@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { classroomAPI, assignmentAPI } from '../services/api';
 import CodeViewer from './CodeViewer';
 
@@ -8,11 +8,7 @@ const StudentClassrooms = ({ user }) => {
   const [error, setError] = useState('');
   const [selectedClassroom, setSelectedClassroom] = useState(null);
 
-  useEffect(() => {
-    fetchClassrooms();
-  }, []);
-
-  const fetchClassrooms = async () => {
+  const fetchClassrooms = useCallback(async () => {
     try {
       const response = await classroomAPI.getStudentClassrooms();
       setClassrooms(response.data.classrooms);
@@ -23,7 +19,11 @@ const StudentClassrooms = ({ user }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchClassrooms();
+  }, [fetchClassrooms]);
 
   const viewClassroom = (classroom) => {
     setSelectedClassroom(classroom);
@@ -98,11 +98,7 @@ const StudentClassroomDetails = ({ classroom, onBack, studentId }) => {
   const [submitting, setSubmitting] = useState(false);
   const [showCodeViewer, setShowCodeViewer] = useState(false);
 
-  useEffect(() => {
-    fetchClassroomDetails();
-  }, [classroom.id]);
-
-  const fetchClassroomDetails = async () => {
+  const fetchClassroomDetails = useCallback(async () => {
     try {
       const response = await classroomAPI.getClassroomDetails(classroom.id);
       setDetails(response.data.classroom);
@@ -111,21 +107,24 @@ const StudentClassroomDetails = ({ classroom, onBack, studentId }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [classroom.id]);
 
   useEffect(() => {
-    // fetch assignments for this classroom (student view)
-    const fetchAssignments = async () => {
+    fetchClassroomDetails();
+  }, [fetchClassroomDetails]);
+
+  const fetchAssignments = useCallback(async () => {
       try {
         const res = await assignmentAPI.getClassroomAssignments(classroom.id);
         setAssignments(res.data.assignments || []);
       } catch (err) {
         console.error('Failed to load classroom assignments', err);
       }
-    };
-
-    fetchAssignments();
   }, [classroom.id]);
+
+  useEffect(() => {
+    fetchAssignments();
+  }, [fetchAssignments]);
 
   const openAssignmentDetails = async (assignmentId) => {
     try {

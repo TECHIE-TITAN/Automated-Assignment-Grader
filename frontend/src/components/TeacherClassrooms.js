@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { classroomAPI } from '../services/api';
 
 const TeacherClassrooms = ({ user }) => {
@@ -9,11 +9,7 @@ const TeacherClassrooms = ({ user }) => {
   const [newClassroom, setNewClassroom] = useState({ name: '', description: '' });
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    fetchClassrooms();
-  }, []);
-
-  const fetchClassrooms = async () => {
+  const fetchClassrooms = useCallback(async () => {
     try {
       const response = await classroomAPI.getTeacherClassrooms();
       setClassrooms(response.data.classrooms);
@@ -23,7 +19,11 @@ const TeacherClassrooms = ({ user }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchClassrooms();
+  }, [fetchClassrooms]);
 
   const handleCreateClassroom = async (e) => {
     e.preventDefault();
@@ -145,11 +145,7 @@ const ClassroomDetails = ({ classroom, onBack, onUpdate }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [branchFilter, setBranchFilter] = useState('');
 
-  useEffect(() => {
-    fetchClassroomDetails();
-  }, [classroom.id]);
-
-  const fetchClassroomDetails = async () => {
+  const fetchClassroomDetails = useCallback(async () => {
     try {
       const response = await classroomAPI.getClassroomDetails(classroom.id);
       setStudents(response.data.classroom.students);
@@ -158,9 +154,9 @@ const ClassroomDetails = ({ classroom, onBack, onUpdate }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [classroom.id]);
 
-  const fetchAvailableStudents = async () => {
+  const fetchAvailableStudents = useCallback(async () => {
     try {
       const response = await classroomAPI.getAllStudents({ search: searchTerm, branch: branchFilter });
       // Filter out already enrolled students
@@ -170,13 +166,17 @@ const ClassroomDetails = ({ classroom, onBack, onUpdate }) => {
     } catch (err) {
       console.error('Failed to load students', err);
     }
-  };
+  }, [searchTerm, branchFilter, students]);
 
   useEffect(() => {
     if (showAddStudents) {
       fetchAvailableStudents();
     }
-  }, [showAddStudents, searchTerm, branchFilter, students]);
+  }, [showAddStudents, fetchAvailableStudents]);
+
+  useEffect(() => {
+    fetchClassroomDetails();
+  }, [fetchClassroomDetails]);
 
   const handleAddStudents = async () => {
     if (selectedStudents.length === 0) return;

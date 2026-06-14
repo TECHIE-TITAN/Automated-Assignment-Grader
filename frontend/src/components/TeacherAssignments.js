@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { classroomAPI, assignmentAPI, rubricAPI } from '../services/api';
 import CodeViewer from './CodeViewer';
 
@@ -23,11 +23,7 @@ const TeacherAssignments = ({ user }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    fetchClassrooms();
-  }, []);
-
-  const fetchClassrooms = async () => {
+  const fetchClassrooms = useCallback(async () => {
     try {
       const response = await classroomAPI.getTeacherClassrooms();
       setClassrooms(response.data.classrooms);
@@ -40,15 +36,13 @@ const TeacherAssignments = ({ user }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
-    if (selectedClassroom) {
-      fetchAssignments();
-    }
-  }, [selectedClassroom]);
+    fetchClassrooms();
+  }, [fetchClassrooms]);
 
-  const fetchAssignments = async () => {
+  const fetchAssignments = useCallback(async () => {
     if (!selectedClassroom) return;
     try {
       const response = await assignmentAPI.getClassroomAssignments(selectedClassroom.id);
@@ -56,7 +50,13 @@ const TeacherAssignments = ({ user }) => {
     } catch (err) {
       console.error('Failed to load assignments', err);
     }
-  };
+  }, [selectedClassroom]);
+
+  useEffect(() => {
+    if (selectedClassroom) {
+      fetchAssignments();
+    }
+  }, [selectedClassroom, fetchAssignments]);
 
   const openAssignmentDetails = async (assignmentId) => {
     try {
