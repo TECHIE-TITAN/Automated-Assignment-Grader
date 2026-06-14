@@ -1,7 +1,7 @@
-const { exec } = require('child_process');
 const fs = require('fs').promises;
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
+const { runPythonInDocker } = require('./dockerRunner');
 
 // Directory for temporary code execution
 const TEMP_DIR = path.join(__dirname, '..', 'temp');
@@ -15,68 +15,27 @@ const ensureTempDir = async () => {
   }
 };
 
-// Execute Python code with timeout and capture output
-const executePythonCode = (code, testInput = '', timeout = 5000) => {
-  return new Promise(async (resolve, reject) => {
-    const executionId = uuidv4();
-    const filePath = path.join(TEMP_DIR, `${executionId}.py`);
+// Execute Python code inside the Docker sandbox and capture output
+const executePythonCode = async (code, testInput = '', timeout = 5000) => {
+  const executionId = uuidv4();
+  const filePath = path.join(TEMP_DIR, `${executionId}.py`);
 
+  try {
+    await ensureTempDir();
+    await fs.writeFile(filePath, code, 'utf8');
+
+    return await runPythonInDocker({
+      submissionPath: filePath,
+      input: testInput,
+      timeout
+    });
+  } finally {
     try {
-      // Ensure temp directory exists
-      await ensureTempDir();
-
-      // Write code to temporary file
-      await fs.writeFile(filePath, code, 'utf8');
-
-      // Prepare command with input if provided
-      const pythonCommand = testInput 
-        ? `echo "${testInput}" | python3 "${filePath}"`
-        : `python3 "${filePath}"`;
-
-      // Execute with timeout
-      const process = exec(pythonCommand, { timeout }, async (error, stdout, stderr) => {
-        // Clean up temp file
-        try {
-          await fs.unlink(filePath);
-        } catch (cleanupErr) {
-          console.error('Failed to cleanup temp file:', cleanupErr);
-        }
-
-        if (error) {
-          if (error.killed) {
-            return resolve({
-              success: false,
-              error: 'Execution timeout (code took too long to execute)',
-              output: stdout,
-              stderr: stderr,
-              timedOut: true
-            });
-          }
-          return resolve({
-            success: false,
-            error: stderr || error.message,
-            output: stdout,
-            stderr: stderr,
-            exitCode: error.code
-          });
-        }
-
-        resolve({
-          success: true,
-          output: stdout,
-          stderr: stderr
-        });
-      });
-    } catch (err) {
-      // Clean up on error
-      try {
-        await fs.unlink(filePath);
-      } catch (cleanupErr) {
-        // Ignore cleanup errors
-      }
-      reject(err);
+      await fs.unlink(filePath);
+    } catch (cleanupErr) {
+      console.error('Failed to cleanup temp file:', cleanupErr);
     }
-  });
+  }
 };
 
 // Check if code contains specific patterns (syntax check)
